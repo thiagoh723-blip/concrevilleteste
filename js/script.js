@@ -74,7 +74,7 @@ const imageObserver = new IntersectionObserver((entries, imageObserver) => {
 lazyImages.forEach((img) => imageObserver.observe(img));
 
 // Concrete-fill animation on mobile for 'Solicitar Orçamento' buttons only
-const mobileFillButtons = document.querySelectorAll('a.btn-primary[href="#contato"]');
+const mobileFillButtons = document.querySelectorAll('a.btn-primary[href="#cta"]');
 
 mobileFillButtons.forEach((btn) => {
   btn.addEventListener('click', (e) => {
