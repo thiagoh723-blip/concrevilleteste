@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="concrevilleLogoTitle">
+  <title id="concrevilleLogoTitle">Logo da CONCREVILLE</title>
+  <rect x="14" y="14" width="292" height="292" rx="28" ry="28" fill="none" stroke="#111111" stroke-width="24"/>
+  <path d="M48 80C77 36 190 36 248 92C294 138 278 272 216 272C163 272 140 220 184 172C212 140 236 136 262 140" fill="none" stroke="#111111" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M52 236C113 278 222 276 272 204" fill="none" stroke="#111111" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M48 84L268 292" fill="none" stroke="#111111" stroke-width="22" stroke-linecap="round"/>
+</svg>
