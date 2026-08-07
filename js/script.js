@@ -6,8 +6,11 @@ const hero = document.querySelector('.hero');
 const revealItems = document.querySelectorAll('.section, .service-card, .feature-card, .gallery-card, .contact-card, .contact-form');
 
 navToggle.addEventListener('click', () => {
-  navMenu.classList.toggle('open');
-  navToggle.classList.toggle('active');
+  const isOpen = navMenu.classList.toggle('open');
+  navToggle.classList.toggle('active', isOpen);
+  navToggle.setAttribute('aria-expanded', String(isOpen));
+  document.documentElement.classList.toggle('nav-open', isOpen);
+  document.body.classList.toggle('nav-open', isOpen);
 });
 
 window.addEventListener('scroll', () => {
@@ -37,6 +40,10 @@ smoothLinks.forEach((link) => {
       }
       if (navMenu.classList.contains('open')) {
         navMenu.classList.remove('open');
+        navToggle.classList.remove('active');
+        navToggle.setAttribute('aria-expanded', 'false');
+        document.documentElement.classList.remove('nav-open');
+        document.body.classList.remove('nav-open');
       }
     }
   });
@@ -96,6 +103,10 @@ mobileFillButtons.forEach((btn) => {
 
     if (navMenu.classList.contains('open')) {
       navMenu.classList.remove('open');
+      navToggle.classList.remove('active');
+      navToggle.setAttribute('aria-expanded', 'false');
+      document.documentElement.classList.remove('nav-open');
+      document.body.classList.remove('nav-open');
     }
 
     btn.classList.add('filling');
