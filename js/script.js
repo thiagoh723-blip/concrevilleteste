@@ -113,3 +113,88 @@ mobileFillButtons.forEach((btn) => {
     }, fillDuration);
   });
 });
+
+// --- Player de implantação (play / pause / mute) ---
+const initDeploymentPlayer = () => {
+  const playBtn = document.querySelector('.deployment-play');
+  const video = document.getElementById('bombaVideo');
+  const wrap = video ? video.closest('.video-wrap') : null;
+  const pauseBtn = document.querySelector('.deployment-pause');
+  const muteBtn = document.querySelector('.deployment-mute');
+
+  if (!playBtn || !video) return;
+
+  // Ajusta o container para a proporção real do vídeo (evita barras pretas)
+  const setAspectFromMetadata = () => {
+    if (!wrap || !video.videoWidth || !video.videoHeight) return;
+    // Define aspect-ratio igual à proporção intrínseca do vídeo
+    try {
+      wrap.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+      // remove qualquer padding-top fallback prévio
+      wrap.style.paddingTop = '';
+      // não forçar uma largura fixa quando o browser suporta aspect-ratio — deixe o layout escalar responsivamente
+      wrap.style.width = '';
+      wrap.style.maxWidth = '100%';
+    } catch (e) {
+      // fallback: aplicar padding-top via CSS se browser não suportar aspect-ratio
+      const padding = (video.videoHeight / video.videoWidth) * 100;
+      wrap.style.aspectRatio = '';
+      wrap.style.paddingTop = padding + '%';
+      // limite a largura ao espaço disponível para evitar overflow; usa largura intrínseca ou a largura do container
+      const parent = wrap.parentElement || document.querySelector('.deployment-media') || document.body;
+      const parentAvailable = parent.clientWidth || Math.min(window.innerWidth, 880);
+      const desired = Math.min(video.videoWidth, parentAvailable);
+      wrap.style.width = desired + 'px';
+      wrap.style.maxWidth = '100%';
+    }
+  };
+
+  if (video.readyState >= 1) setAspectFromMetadata(); else video.addEventListener('loadedmetadata', setAspectFromMetadata);
+
+  playBtn.addEventListener('click', () => {
+    video.muted = false;
+    video.play().catch(() => {});
+    const onPlaying = () => {
+      if (wrap) wrap.classList.add('playing');
+      if (pauseBtn) { pauseBtn.textContent = 'Pausar'; pauseBtn.setAttribute('aria-pressed','false'); }
+      if (muteBtn) { muteBtn.textContent = video.muted ? 'Som' : 'Sem som'; muteBtn.setAttribute('aria-pressed', String(!video.muted)); }
+      video.removeEventListener('playing', onPlaying);
+    };
+    video.addEventListener('playing', onPlaying);
+  });
+
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', () => {
+      if (video.paused) { video.play(); pauseBtn.textContent = 'Pausar'; pauseBtn.setAttribute('aria-pressed','false'); }
+      else { video.pause(); pauseBtn.textContent = 'Continuar'; pauseBtn.setAttribute('aria-pressed','true'); }
+    });
+  }
+
+  if (muteBtn) {
+    muteBtn.textContent = video.muted ? 'Som' : 'Sem som';
+    muteBtn.setAttribute('aria-pressed', String(!video.muted));
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? 'Som' : 'Sem som';
+      muteBtn.setAttribute('aria-pressed', String(!video.muted));
+    });
+  }
+
+  video.addEventListener('pause', () => { if (wrap) wrap.classList.remove('playing'); if (pauseBtn) { pauseBtn.textContent = 'Continuar'; pauseBtn.setAttribute('aria-pressed','true'); } });
+  video.addEventListener('play', () => { if (wrap) wrap.classList.add('playing'); if (pauseBtn) { pauseBtn.textContent = 'Pausar'; pauseBtn.setAttribute('aria-pressed','false'); } });
+
+  // Permite alternar play/pause ao clicar na área do vídeo (ignora cliques nos botões)
+  if (wrap) {
+    wrap.addEventListener('click', (e) => {
+      // se o clique for em um botão (play/pause/mute), ignore aqui para não duplicar ações
+      if (e.target.closest('button')) return;
+      if (video.paused) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }
+};
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initDeploymentPlayer); else initDeploymentPlayer();

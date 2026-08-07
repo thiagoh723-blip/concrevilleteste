@@ -1195,3 +1195,117 @@ main {
     font-size: 0.95rem;
   }
 }
+
+/* Player de implantação: moldura listrada, tamanho e controles */
+.deployment-media {
+  max-width: 880px;
+  width: min(100%, 88vw);
+  margin-top: 1.25rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; /* garante que .striped-frame inline-block seja centralizada */
+}
+
+.striped-frame {
+  padding: 8px; /* faixa externa listrada (restaurada) */
+  border-radius: 16px;
+  background: repeating-linear-gradient(45deg, #111 0 12px, #ffd400 12px 24px);
+  background-size: 56px 56px;
+  will-change: background-position-x;
+  animation: stripe-move 6s linear infinite;
+}
+
+.striped-frame .media-inner {
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));
+  text-align: center; /* centraliza o .video-wrap inline-block */
+}
+
+.video-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px; /* alinhado com media-inner */
+  background: transparent;
+  display: inline-block; /* shrink-to-fit ao vídeo */
+  width: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 200px);
+}
+
+/* Faz a moldura zebra ajustar ao conteúdo (vídeo) em vez de ocupar 100% da largura */
+.striped-frame {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  padding: 8px; /* mantém espessura da faixa */
+  box-sizing: content-box;
+}
+
+/* Centraliza a moldura dentro da seção */
+#implantacao {
+  text-align: center;
+}
+
+.video-wrap video {
+  /* o vídeo se ajusta ao tamanho do wrapper mantendo proporção */
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px; /* borda do vídeo alinhada à moldura interna */
+  object-fit: contain;
+  pointer-events: none; /* evita que o vídeo bloqueie cliques no botão */
+}
+
+.deployment-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  opacity: 0.98;
+  transition: opacity 0.24s ease;
+  will-change: opacity, transform;
+  cursor: pointer;
+}
+
+.video-wrap .deployment-play:hover { transform: translate(-50%, -50%); }
+
+.video-wrap.playing .deployment-play {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.video-controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10000;
+}
+
+.video-controls .btn {
+  padding: 0.5rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  background: rgba(17,17,17,0.7);
+  color: #fff;
+}
+
+.video-controls .btn:active,
+.video-controls .btn:focus { outline: 2px solid rgba(244,196,0,0.9); }
+
+@keyframes stripe-move { from { background-position: 0 0; } to { background-position: 56px 0; } }
+
+@media (max-width: 720px) {
+  .deployment-media { padding: 0 1rem; width: calc(100% - 2rem); max-width: none; }
+  .video-wrap video { max-height: calc(100vh - 120px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .striped-frame { animation: none !important; }
+}
